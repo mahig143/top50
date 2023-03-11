@@ -1,33 +1,140 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Live Subscriber Count Table</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <table id="subscriber-table">
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>Channel Name</th>
-          <th>Subscriber Count</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>PewDiePie</td>
-          <td id="pewdiepie-count">Loading...</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>T-Series</td>
-          <td id="tseries-count">Loading...</td>
-        </tr>
-        <!-- Add more rows for additional channels here -->
-      </tbody>
-    </table>
+<head>
+	<title>Top 50 YouTube Channels by Subscriber Count</title>
+</head>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<th>Rank</th>
+				<th>Channel</th>
+				<th>Subscriber Count</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- PewDiePie -->
+			<tr id="pewdiepie">
+				<td>1</td>
+				<td>PewDiePie</td>
+				<td id="pewdiepie-subscribers"></td>
+			</tr>
+			<!-- T-Series -->
+			<tr id="tseries">
+				<td>2</td>
+				<td>T-Series</td>
+				<td id="tseries-subscribers"></td>
+			</tr>
+			<!-- Cocomelon - Nursery Rhymes -->
+			<tr id="cocomelon">
+				<td>3</td>
+				<td>Cocomelon - Nursery Rhymes</td>
+				<td id="cocomelon-subscribers"></td>
+			</tr>
+			<!-- SET India -->
+			<tr id="setindia">
+				<td>4</td>
+				<td>SET India</td>
+				<td id="setindia-subscribers"></td>
+			</tr>
+			<!-- Canal KondZilla -->
+			<tr id="canalkondzilla">
+				<td>5</td>
+				<td>Canal KondZilla</td>
+				<td id="canalkondzilla-subscribers"></td>
+			</tr>
+			<!-- 5-Minute Crafts -->
+			<tr id="5minutecrafts">
+				<td>6</td>
+				<td>5-Minute Crafts</td>
+				<td id="5minutecrafts-subscribers"></td>
+			</tr>
+			<!-- WWE -->
+			<tr id="wwe">
+				<td>7</td>
+				<td>WWE</td>
+				<td id="wwe-subscribers"></td>
+			</tr>
+			<!-- Kids Diana Show -->
+			<tr id="kidsdianashow">
+				<td>8</td>
+				<td>Kids Diana Show</td>
+				<td id="kidsdianashow-subscribers"></td>
+			</tr>
+			<!-- Zee Music Company -->
+			<tr id="zeemusiccompany">
+				<td>9</td>
+				<td>Zee Music Company</td>
+				<td id="zeemusiccompany-subscribers"></td>
+			</tr>
+			<!-- Like Nastya -->
+			<tr id="likenastya">
+				<td>10</td>
+				<td>Like Nastya</td>
+				<td id="likenastya-subscribers"></td>
+			</tr>
+			<!-- MrBeast -->
+			<tr id="mrbeast">
+				<td>11</td>
+				<td>MrBeast</td>
+				<td id="mrbeast-subscribers"></td>
+			</tr>
+			<!-- Vlad and Niki -->
+			<tr id="vladandniki">
+				<td>12</td>
+				<td>Vlad and Niki</td>
+				<td id="vladandniki-subscribers"></td>
+			</tr>
+			
+			// Define an array of channel IDs
+const channelIds = ['UC-lHJZR3Gqxm24_Vd_AJ5Yw', // PewDiePie
+                    'UCq-Fj5jknLsUf-MWSy4_brA', // T-Series
+                    'UCbCmjCuTUZos6Inko4u57UQ', // Cocomelon - Nursery Rhymes
+                    'UCpEhnqL0y41EpW2TvWAHD7Q', // SET India
+                    'UCffDXn7ycAzwL2LDlbyWOTw', // Canal KondZilla
+                    'UC295-Dw_tDNtZXFeAPAW6Aw', // 5-Minute Crafts
+                    'UCJ5v_MCY6GNUBTO8-D3XoAg', // WWE
+                    'UCRXsO4G-dlhJDt3byV-DATA', // Kids Diana Show
+                    'UCZCj_m5aIh5Jmj6dMwJlcJA', // Zee Music Company
+                    'UCpGdL9Sn3Q5YWUH2DVUW1Ug', // Like Nastya
+                    'UCX6OQ3DkcsbYNE6H8uQQuVA', // MrBeast
+                    'UCvlE5gTbOvjiolFlEm-c_Ow', // Vlad and Niki
+                    'UCIwFjwMjI0y7PDBVEO9-bkQ']; // Justin Bieber
 
-    <script src="script.js"></script>
-  </body>
-</html>
+// Define a function to update the subscriber count for a given channel ID
+function updateSubscriberCount(channelId) {
+  // Construct the API URL with the channel ID
+  const apiUrl = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=AIzaSyCczQ47K41gMpEHbDUTruHsyNMElKdG8M4`;
+  
+  // Make a Fetch request to retrieve the subscriber count
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      // Extract the subscriber count from the response
+      const subscriberCount = data.items[0].statistics.subscriberCount;
+      
+      // Update the HTML with the new subscriber count
+      const element = document.getElementById(channelId + '-subscribers');
+      element.textContent = subscriberCount;
+      
+      // Change the color of the text based on the change in subscriber count
+      const previousSubscriberCount = parseInt(element.dataset.previousCount);
+      if (previousSubscriberCount && subscriberCount > previousSubscriberCount) {
+        element.style.color = 'green';
+      } else if (previousSubscriberCount && subscriberCount < previousSubscriberCount) {
+        element.style.color = 'red';
+      }
+      
+      // Store the new subscriber count as the previous count for the next update
+      element.dataset.previousCount = subscriberCount;
+    })
+    .catch(error => console.error(error));
+}
+
+// Call the updateSubscriberCount function for each channel ID every 10 seconds
+setInterval(() => {
+  channelIds.forEach(channelId => {
+    updateSubscriberCount(channelId);
+  });
+}, 10000);
+
